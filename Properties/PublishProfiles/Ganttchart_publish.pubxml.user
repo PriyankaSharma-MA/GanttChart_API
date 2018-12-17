@@ -1,0 +1,172 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+This file is used by the publish/package process of your Web project. You can customize the behavior of this process
+by editing this MSBuild file. In order to learn more about this please visit http://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <_PublishTargetUrl>C:\OTIS_project\GanttchartBuild</_PublishTargetUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="Areas/HelpPage/HelpPage.css">
+      <publishTime>11/20/2018 21:37:40</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/Api.cshtml">
+      <publishTime>11/20/2018 21:37:40</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/ApiGroup.cshtml">
+      <publishTime>11/20/2018 21:37:40</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/HelpPageApiModel.cshtml">
+      <publishTime>11/20/2018 21:37:40</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/ImageSample.cshtml">
+      <publishTime>11/20/2018 21:37:40</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/InvalidSample.cshtml">
+      <publishTime>11/20/2018 21:37:40</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/Parameters.cshtml">
+      <publishTime>11/20/2018 21:37:40</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/Samples.cshtml">
+      <publishTime>11/20/2018 21:37:40</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/DisplayTemplates/TextSample.cshtml">
+      <publishTime>11/20/2018 21:37:40</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Help/Index.cshtml">
+      <publishTime>11/20/2018 21:37:40</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Shared/_Layout.cshtml">
+      <publishTime>11/20/2018 21:37:40</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/Web.config">
+      <publishTime>11/20/2018 21:37:40</publishTime>
+    </File>
+    <File Include="Areas/HelpPage/Views/_ViewStart.cshtml">
+      <publishTime>11/20/2018 21:37:33</publishTime>
+    </File>
+    <File Include="bin/Antlr3.Runtime.dll">
+      <publishTime>11/20/2018 21:37:41</publishTime>
+    </File>
+    <File Include="bin/GanttChart.dll">
+      <publishTime>11/22/2018 18:28:50</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Web.Infrastructure.dll">
+      <publishTime>11/20/2018 21:37:37</publishTime>
+    </File>
+    <File Include="bin/Newtonsoft.Json.dll">
+      <publishTime>11/20/2018 21:37:35</publishTime>
+    </File>
+    <File Include="bin/System.Net.Http.Formatting.dll">
+      <publishTime>11/20/2018 21:37:38</publishTime>
+    </File>
+    <File Include="bin/System.Web.Helpers.dll">
+      <publishTime>11/20/2018 21:37:37</publishTime>
+    </File>
+    <File Include="bin/System.Web.Http.dll">
+      <publishTime>11/20/2018 21:37:38</publishTime>
+    </File>
+    <File Include="bin/System.Web.Http.WebHost.dll">
+      <publishTime>11/20/2018 21:37:39</publishTime>
+    </File>
+    <File Include="bin/System.Web.Mvc.dll">
+      <publishTime>11/20/2018 21:37:38</publishTime>
+    </File>
+    <File Include="bin/System.Web.Optimization.dll">
+      <publishTime>11/20/2018 21:37:37</publishTime>
+    </File>
+    <File Include="bin/System.Web.Razor.dll">
+      <publishTime>11/20/2018 21:37:37</publishTime>
+    </File>
+    <File Include="bin/System.Web.WebPages.Deployment.dll">
+      <publishTime>11/20/2018 21:37:37</publishTime>
+    </File>
+    <File Include="bin/System.Web.WebPages.dll">
+      <publishTime>11/20/2018 21:37:37</publishTime>
+    </File>
+    <File Include="bin/System.Web.WebPages.Razor.dll">
+      <publishTime>11/20/2018 21:37:37</publishTime>
+    </File>
+    <File Include="bin/WebGrease.dll">
+      <publishTime>11/20/2018 21:37:41</publishTime>
+    </File>
+    <File Include="Content/bootstrap.css">
+      <publishTime>11/20/2018 21:37:34</publishTime>
+    </File>
+    <File Include="Content/bootstrap.min.css">
+      <publishTime>11/20/2018 21:37:34</publishTime>
+    </File>
+    <File Include="Content/Site.css">
+      <publishTime>11/20/2018 21:37:33</publishTime>
+    </File>
+    <File Include="favicon.ico">
+      <publishTime>11/20/2018 21:37:33</publishTime>
+    </File>
+    <File Include="fonts/glyphicons-halflings-regular.eot">
+      <publishTime>11/20/2018 21:37:34</publishTime>
+    </File>
+    <File Include="fonts/glyphicons-halflings-regular.svg">
+      <publishTime>11/20/2018 21:37:34</publishTime>
+    </File>
+    <File Include="fonts/glyphicons-halflings-regular.ttf">
+      <publishTime>11/20/2018 21:37:34</publishTime>
+    </File>
+    <File Include="fonts/glyphicons-halflings-regular.woff">
+      <publishTime>11/20/2018 21:37:34</publishTime>
+    </File>
+    <File Include="Global.asax">
+      <publishTime>11/20/2018 21:37:33</publishTime>
+    </File>
+    <File Include="packages.config">
+      <publishTime>11/20/2018 21:37:41</publishTime>
+    </File>
+    <File Include="Scripts/bootstrap.js">
+      <publishTime>11/20/2018 21:37:34</publishTime>
+    </File>
+    <File Include="Scripts/bootstrap.min.js">
+      <publishTime>11/20/2018 21:37:33</publishTime>
+    </File>
+    <File Include="Scripts/jquery-1.10.2.js">
+      <publishTime>11/20/2018 21:37:36</publishTime>
+    </File>
+    <File Include="Scripts/jquery-1.10.2.min.js">
+      <publishTime>11/20/2018 21:37:36</publishTime>
+    </File>
+    <File Include="Scripts/jquery-1.10.2.min.map">
+      <publishTime>11/20/2018 21:37:36</publishTime>
+    </File>
+    <File Include="Scripts/modernizr-2.6.2.js">
+      <publishTime>11/20/2018 21:37:40</publishTime>
+    </File>
+    <File Include="Scripts/respond.js">
+      <publishTime>11/20/2018 21:37:41</publishTime>
+    </File>
+    <File Include="Scripts/respond.min.js">
+      <publishTime>11/20/2018 21:37:41</publishTime>
+    </File>
+    <File Include="Scripts/_references.js">
+      <publishTime>11/21/2018 15:12:37</publishTime>
+    </File>
+    <File Include="Views/Home/Index.cshtml">
+      <publishTime>11/20/2018 21:37:33</publishTime>
+    </File>
+    <File Include="Views/Shared/Error.cshtml">
+      <publishTime>11/20/2018 21:37:33</publishTime>
+    </File>
+    <File Include="Views/Shared/_Layout.cshtml">
+      <publishTime>11/20/2018 21:37:33</publishTime>
+    </File>
+    <File Include="Views/Web.config">
+      <publishTime>11/20/2018 21:37:33</publishTime>
+    </File>
+    <File Include="Views/_ViewStart.cshtml">
+      <publishTime>11/20/2018 21:37:33</publishTime>
+    </File>
+    <File Include="Web.config">
+      <publishTime>11/21/2018 16:58:14</publishTime>
+    </File>
+  </ItemGroup>
+</Project>
