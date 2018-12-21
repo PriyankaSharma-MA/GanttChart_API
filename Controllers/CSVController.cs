@@ -18,9 +18,13 @@ using System.Text;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 //using  Microsoft.Office.Interop.Excel;
-using ExcelLibrary;
+//using ExcelLibrary;
 
-using CSharpJExcel.Jxl;
+//using CSharpJExcel.Jxl;
+using OfficeOpenXml;
+
+
+
 namespace GanttChart.Controllers
 {
     public class CSVController : ApiController
@@ -81,9 +85,9 @@ namespace GanttChart.Controllers
         [ActionName("uploadHistoryFile")]
         public void uploadHistoryFile(string filename)
         {
-           
+
             var archivepath = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/Archive"));
-           // string[] filePaths = Directory.GetFiles(path, filename);
+            // string[] filePaths = Directory.GetFiles(path, filename);
             DirectoryInfo d = new DirectoryInfo(archivepath);//Assuming Test is your Folder
 
             FileInfo[] archiveFiles = d.GetFiles(filename); //Getting Text files
@@ -96,17 +100,17 @@ namespace GanttChart.Controllers
 
             //}
             foreach (FileInfo file in archiveFiles)
-           {
-              // System.IO.File.Copy(file.Name.Split('.')[0], path1.ToString());
-               //file.MoveTo(destpath);
+            {
+                // System.IO.File.Copy(file.Name.Split('.')[0], path1.ToString());
+                //file.MoveTo(destpath);
 
 
-               file.CreationTime = DateTime.Now;
-               file.CopyTo(destpath, true);
-              // file.MoveTo(destpath);
-              // file.Replace(destpath, "kk.xlsx");
-           //    file.Replace(path1, path1);
-           }
+                file.CreationTime = DateTime.Now;
+                file.CopyTo(destpath, true);
+                // file.MoveTo(destpath);
+                // file.Replace(destpath, "kk.xlsx");
+                //    file.Replace(path1, path1);
+            }
         }
         [HttpGet]
         [ActionName("GetArchive")]
@@ -116,20 +120,20 @@ namespace GanttChart.Controllers
             HistoryFiledata historyFiledata;
             try
             {
-              //  var fileName = Path.GetFileName(file.FileName);
+                //  var fileName = Path.GetFileName(file.FileName);
                 var path = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/Archive"));
                 //string[] filePaths = Directory.GetFiles(path, "*.xlsx");
                 DirectoryInfo d = new DirectoryInfo(path);//Assuming Test is your Folder
-              
+
                 FileInfo[] Files = d.GetFiles("*.xlsx").OrderByDescending(p => p.CreationTime).ToArray(); //Getting Text files
 
                 foreach (FileInfo file in Files)
                 {
                     historyFiledata = new HistoryFiledata();
-                    historyFiledata.file_name =  file.Name;
+                    historyFiledata.file_name = file.Name;
                     lsthistoryFiledata.Add(historyFiledata);
                 }
-                 
+
             }
             catch (Exception ex)
             {
@@ -179,10 +183,10 @@ namespace GanttChart.Controllers
                 cmdExcel.Connection = connExcel;
 
                 //Get the name of First Sheet
-                connExcel.Open();
+              
 
               
-                connExcel.Close();
+               
 
                 //Read Data from First Sheet
                 connExcel.Open();
@@ -193,82 +197,81 @@ namespace GanttChart.Controllers
                 cmdExcel.CommandText = "SELECT * From [" + Roadmapcolor + "]";
                 oda.SelectCommand = cmdExcel;
                 oda.Fill(dtColor);
-
+                connExcel.Close();
+                 var directory = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/CurrentFile"));
+    
+                  DirectoryInfo d = new DirectoryInfo(directory);//Assuming Test is your Folder
              
-                //Application appExcel;
-                //Workbook newWorkbook;
-   
-                //string fileName = @"c:\CSV\Roadmap.xlsx";
-                //Workbook workbook = Workbook.getWorkbook(new System.IO.FileInfo(fileName));
-                //var sheet = workbook.getSheet(0);
+                 FileInfo[] file = d.GetFiles("Roadmap.xlsx");
+                 FileInfo excelfile = file[0];
+                 ExcelPackage xlPackage = new ExcelPackage(excelfile,true);
 
-                //var content = sheet.getCell(0, 1).getContents();
+                 ExcelWorksheet objSht = xlPackage.Workbook.Worksheets[2];
+                 int maxRow = dtColor.Rows.Count+1;
+                 int maxCol = 6;
 
-                // workbook.close();
-             
+
+                 OfficeOpenXml.ExcelRange range = objSht.Cells[1, 1, maxRow, maxCol];
+
+
+                 for (int i = 2; i <= maxRow; i++)
+                 {
+
+                     string color = range[i, 2].Style.Fill.BackgroundColor.Rgb;
+                     excelColordata = new ExcelColordata();
+                     excelColordata.project_name = Convert.ToString(range[i, 1].Value);
+                     excelColordata.project_color = range[i, 2].Style.Fill.BackgroundColor.Rgb;
+
+                     excelColordata.region_name = Convert.ToString(range[i, 3].Value);
+                     excelColordata.region_color = range[i, 4].Style.Fill.BackgroundColor.Rgb;
+
+                     excelColordata.resource_name = Convert.ToString(range[i, 5].Value);
+                     excelColordata.resource_color = range[i, 6].Style.Fill.BackgroundColor.Rgb;
+                     lstExcelColordata.Add(excelColordata);
+
+                 }
+                 //foreach (DataRow dr in dtColor.Rows)
+                 //{
+
+                 //    excelColordata = new ExcelColordata();
+                 //    excelColordata.project_name = Convert.ToString(dr[0]);
+                 //    excelColordata.project_color = Convert.ToString(dr[1]);
+
+                 //    excelColordata.region_name = Convert.ToString(dr[2]);
+                 //    excelColordata.region_color = Convert.ToString(dr[3]);
+
+                 //    excelColordata.resource_name = Convert.ToString(dr[4]);
+                 //    excelColordata.resource_color = Convert.ToString(dr[5]);
+                 //    lstExcelColordata.Add(excelColordata);
+                 //}
+                     foreach (DataRow dr in dtRoadmap.Rows)
+                     {
+
+
+                         excelRoadMapdata = new ExcelRoadMapdata();
+                         excelRoadMapdata.project_name = Convert.ToString(dr[0]);
+                         excelRoadMapdata.region_name = Convert.ToString(dr[1]);
+                         excelRoadMapdata.country_name = Convert.ToString(dr[2]);
+                         excelRoadMapdata.resource1_name = Convert.ToString(dr[3]);
+                         excelRoadMapdata.resource2_name = Convert.ToString(dr[4]);
+                         excelRoadMapdata.start_date = (Convert.ToDateTime(dr[5])).ToString("dd-MM-yyyy");
+                         excelRoadMapdata.end_date = (Convert.ToDateTime(dr[6])).ToString("dd-MM-yyyy");
+                         lstExcelRoadMapdata.Add(excelRoadMapdata);
+                         if (Convert.ToString(dr[4]) != "")
+                         {
+                             excelRoadMapdata = new ExcelRoadMapdata();
+                             excelRoadMapdata.project_name = Convert.ToString(dr[0]);
+                             excelRoadMapdata.region_name = Convert.ToString(dr[1]);
+                             excelRoadMapdata.country_name = Convert.ToString(dr[2]);
+                             excelRoadMapdata.resource1_name = Convert.ToString(dr[4]);
+                             excelRoadMapdata.resource2_name = Convert.ToString(dr[4]);
+                             excelRoadMapdata.start_date = (Convert.ToDateTime(dr[5])).ToString("dd-MM-yyyy");
+                             excelRoadMapdata.end_date = (Convert.ToDateTime(dr[6])).ToString("dd-MM-yyyy");
+                             lstExcelRoadMapdata.Add(excelRoadMapdata);
+                         }
+                     }
                
-
-                //ExcelFile objWrkBk = ExcelFile.Load(@"K:\LaPonce\test.xls");
-              //  ExcelWorksheet objSht = objWrkBk.Worksheets[0];
-
-                //int maxRow = objSht.Rows.Count;
-                //int maxCol = objSht.CalculateMaxUsedColumns();
-
-                //for (int iCol = 0; iCol < maxCol; iCol++)
-                //{
-                //    for (int iRow = 0; iRow < maxRow; iRow++)
-                //    {
-                //        string strCell = CellRange.RowColumnToPosition(iRow, iCol);
-                //        ExcelCell cell = objSht.Cells[strCell];
-
-                //        MsgBox(cell.Value);
-                //        MsgBox(cell.Style.Font.Color);
-                //    }
-                //}
-                // List<DataRow> lstExcelRoadMapdata = new List<DataRow>();
-                //List<DataRow> lstExcelColordata = new List<DataRow>();
-
-                foreach (DataRow dr in dtRoadmap.Rows)
-                {
-                   
-
-                    excelRoadMapdata = new ExcelRoadMapdata();
-                    excelRoadMapdata.project_name = Convert.ToString(dr[0]);
-                    excelRoadMapdata.region_name = Convert.ToString(dr[1]);
-                    excelRoadMapdata.country_name = Convert.ToString(dr[2]);
-                    excelRoadMapdata.resource1_name = Convert.ToString(dr[3]);
-                    excelRoadMapdata.resource2_name = Convert.ToString(dr[4]);
-                    excelRoadMapdata.start_date= (Convert.ToDateTime(dr[5])).ToString("dd-MM-yyyy");
-                    excelRoadMapdata.end_date = (Convert.ToDateTime(dr[6])).ToString("dd-MM-yyyy");
-                    lstExcelRoadMapdata.Add(excelRoadMapdata);
-                    if (Convert.ToString(dr[4]) != "")
-                    {
-                        excelRoadMapdata = new ExcelRoadMapdata();
-                        excelRoadMapdata.project_name = Convert.ToString(dr[0]);
-                        excelRoadMapdata.region_name = Convert.ToString(dr[1]);
-                        excelRoadMapdata.country_name = Convert.ToString(dr[2]);
-                        excelRoadMapdata.resource1_name = Convert.ToString(dr[4]);
-                        excelRoadMapdata.resource2_name = Convert.ToString(dr[4]);
-                        excelRoadMapdata.start_date = (Convert.ToDateTime(dr[5])).ToString("dd-MM-yyyy");
-                        excelRoadMapdata.end_date = (Convert.ToDateTime(dr[6])).ToString("dd-MM-yyyy");
-                        lstExcelRoadMapdata.Add(excelRoadMapdata);
-                    }
-                }
-               
-                foreach (DataRow dr in dtColor.Rows)
-                {
-
-                    excelColordata = new ExcelColordata();
-                    excelColordata.project_name = Convert.ToString(dr[0]);
-                    excelColordata.project_color = Convert.ToString(dr[1]);
-
-                    excelColordata.region_name = Convert.ToString(dr[2]);
-                    excelColordata.region_color = Convert.ToString(dr[3]);
-
-                    excelColordata.resource_name = Convert.ToString(dr[4]);
-                    excelColordata.resource_color = Convert.ToString(dr[5]);
-                    lstExcelColordata.Add(excelColordata);
-                }
+              
                 excelData = new ExcelData();
                 excelData.excelRoadMapdata = lstExcelRoadMapdata;
                 excelData.excelColordata = lstExcelColordata;
@@ -276,35 +279,8 @@ namespace GanttChart.Controllers
                 //excelData = new ExcelData();
                 
               //  lstExcelData.Add(excelData);
-                connExcel.Close();
-                //excel read/////
-              //  connExcel.Open();
-                //var path = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/CurrentFile"));
-                ////string[] filePaths = Directory.GetFiles(path, "*.xlsx");
-                //DirectoryInfo d = new DirectoryInfo(path);//Assuming Test is your Folder
-                //FileInfo[] Files = d.GetFiles("RoadMap.xlsx"); //Getting Text files
-
-                //foreach (FileInfo file in Files)
-                //{
-                //    Workbook book = Workbook.getWorkbook(file);
-
-                //    var sheet = book.getSheet(0);
-
-
-
-                //}
-              //  connExcel.Close();
-                //var orderForBooks = from bk in lstExcelRoadMapdata
-                //                    join ordr in lstExcelColordata
-                //                    on bk. equals ordr.BookID
-                //                    into a
-                //                    from b in a.DefaultIfEmpty(new Order())
-                //                    select new
-                //                    {
-                //                        bk.BookID,
-                //                        Name = bk.BookNm,
-                //                        b.PaymentMode
-                //                    };
+               
+          
             }
             catch (Exception ex)
             {
@@ -314,7 +290,7 @@ namespace GanttChart.Controllers
 
         }
         [NonAction]
-       // [ActionName("UploadFile")]
+        // [ActionName("UploadFile")]
         public string PostUpload()
         {
             var file = HttpContext.Current.Request.Files.Count > 0 ?
@@ -337,9 +313,9 @@ namespace GanttChart.Controllers
             if (file.ContentLength > 0)
             {
                 var splitfileextension = file.FileName.Split('.');
-                 fileName = Path.GetFileName(splitfileextension[0].Replace(' ','_')) + "_" + DateTime.Now.ToString("MMddyyyyhhmmss") + "."+splitfileextension[1];
-                 var path = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/Archive"), fileName);
-                
+                fileName = Path.GetFileName(splitfileextension[0].Replace(' ', '_')) + "_" + DateTime.Now.ToString("MMddyyyyhhmmss") + "." + splitfileextension[1];
+                var path = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/Archive"), fileName);
+
                 file.SaveAs(path);
                 var path1 = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/CurrentFile"), "Roadmap.xlsx");
                 file.SaveAs(path1);

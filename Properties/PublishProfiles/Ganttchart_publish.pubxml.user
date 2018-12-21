@@ -52,13 +52,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>11/20/2018 21:37:41</publishTime>
     </File>
     <File Include="bin/CSharpJExcel.dll">
-      <publishTime>03/12/2010 14:04:18</publishTime>
+      <publishTime>12/03/2010 14:04:18</publishTime>
     </File>
     <File Include="bin/ExcelLibrary.dll">
       <publishTime>07/30/2011 15:40:26</publishTime>
     </File>
     <File Include="bin/GanttChart.dll">
-      <publishTime>12/20/2018 12:08:53</publishTime>
+      <publishTime>12/20/2018 23:52:42</publishTime>
     </File>
     <File Include="bin/GanttChart.dll.config">
       <publishTime>12/18/2018 17:39:13</publishTime>

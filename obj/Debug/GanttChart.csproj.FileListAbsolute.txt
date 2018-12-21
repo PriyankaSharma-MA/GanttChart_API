@@ -22,3 +22,6 @@ C:\OTIS_project\GanttChart\GanttChart\GanttChart\obj\Debug\GanttChart.csproj.Res
 C:\OTIS_project\GanttChart\GanttChart\GanttChart\bin\CSharpJExcel.dll
 C:\OTIS_project\GanttChart\GanttChart\GanttChart\bin\CSharpJExcel.pdb
 C:\OTIS_project\GanttChart\GanttChart\GanttChart\bin\ExcelLibrary.dll
+C:\OTIS_project\GanttChart\GanttChart\GanttChart\bin\EPPlus.dll
+C:\OTIS_project\GanttChart\GanttChart\GanttChart\bin\EPPlus.xml
+C:\OTIS_project\GanttChart\GanttChart\GanttChart\obj\Debug\Interop.ExecutePackageTaskLib.dll
