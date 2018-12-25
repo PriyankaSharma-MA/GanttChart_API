@@ -22,3 +22,6 @@ C:\OTIS_project\GanttChart\GanttChart\GanttChart\bin\CSharpJExcel.pdb
 C:\OTIS_project\GanttChart\GanttChart\GanttChart\obj\Release\Interop.LCC11.dll
 C:\OTIS_project\GanttChart\GanttChart\GanttChart\obj\Release\Interop.Microsoft.Office.Core.dll
 C:\OTIS_project\GanttChart\GanttChart\GanttChart\obj\Release\GanttChart.csproj.ResolveComReference.cache
+C:\OTIS_project\GanttChart\GanttChart\GanttChart\bin\EPPlus.dll
+C:\OTIS_project\GanttChart\GanttChart\GanttChart\bin\EPPlus.xml
+C:\OTIS_project\GanttChart\GanttChart\GanttChart\obj\Release\Interop.ExecutePackageTaskLib.dll

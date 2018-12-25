@@ -52,16 +52,19 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>11/20/2018 21:37:41</publishTime>
     </File>
     <File Include="bin/CSharpJExcel.dll">
-      <publishTime>12/03/2010 14:04:18</publishTime>
+      <publishTime>03/12/2010 14:04:18</publishTime>
+    </File>
+    <File Include="bin/EPPlus.dll">
+      <publishTime>12/21/2018 12:41:38</publishTime>
     </File>
     <File Include="bin/ExcelLibrary.dll">
       <publishTime>07/30/2011 15:40:26</publishTime>
     </File>
     <File Include="bin/GanttChart.dll">
-      <publishTime>12/20/2018 23:52:42</publishTime>
+      <publishTime>12/24/2018 21:17:48</publishTime>
     </File>
     <File Include="bin/GanttChart.dll.config">
-      <publishTime>12/18/2018 17:39:13</publishTime>
+      <publishTime>12/21/2018 12:41:41</publishTime>
     </File>
     <File Include="bin/Microsoft.Web.Infrastructure.dll">
       <publishTime>11/20/2018 21:37:37</publishTime>
@@ -130,7 +133,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>11/20/2018 21:37:33</publishTime>
     </File>
     <File Include="packages.config">
-      <publishTime>12/18/2018 17:39:13</publishTime>
+      <publishTime>12/21/2018 12:41:41</publishTime>
     </File>
     <File Include="Scripts/bootstrap.js">
       <publishTime>11/20/2018 21:37:34</publishTime>
@@ -175,7 +178,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>11/20/2018 21:37:33</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>12/20/2018 01:41:42</publishTime>
+      <publishTime>12/23/2018 18:38:09</publishTime>
     </File>
   </ItemGroup>
 </Project>

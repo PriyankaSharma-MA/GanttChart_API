@@ -190,10 +190,10 @@ namespace GanttChart.Controllers
 
                 //Read Data from First Sheet
                 connExcel.Open();
-                cmdExcel.CommandText = "SELECT * From [" + Roadmapsheet + "]";
+                cmdExcel.CommandText = "SELECT * From [" + Roadmapsheet + "] ORDER BY 6";
                 oda.SelectCommand = cmdExcel;
                 oda.Fill(dtRoadmap);
-
+             
                 cmdExcel.CommandText = "SELECT * From [" + Roadmapcolor + "]";
                 oda.SelectCommand = cmdExcel;
                 oda.Fill(dtColor);
@@ -219,13 +219,13 @@ namespace GanttChart.Controllers
 
                      string color = range[i, 2].Style.Fill.BackgroundColor.Rgb;
                      excelColordata = new ExcelColordata();
-                     excelColordata.project_name = Convert.ToString(range[i, 1].Value);
+                     excelColordata.project_name = Convert.ToString(range[i, 1].Value).Trim();
                      excelColordata.project_color = range[i, 2].Style.Fill.BackgroundColor.Rgb;
 
-                     excelColordata.region_name = Convert.ToString(range[i, 3].Value);
+                     excelColordata.region_name = Convert.ToString(range[i, 3].Value).Trim();
                      excelColordata.region_color = range[i, 4].Style.Fill.BackgroundColor.Rgb;
 
-                     excelColordata.resource_name = Convert.ToString(range[i, 5].Value);
+                     excelColordata.resource_name = Convert.ToString(range[i, 5].Value).Trim();
                      excelColordata.resource_color = range[i, 6].Style.Fill.BackgroundColor.Rgb;
                      lstExcelColordata.Add(excelColordata);
 
@@ -249,33 +249,33 @@ namespace GanttChart.Controllers
 
 
                          excelRoadMapdata = new ExcelRoadMapdata();
-                         excelRoadMapdata.project_name = Convert.ToString(dr[0]);
-                         excelRoadMapdata.region_name = Convert.ToString(dr[1]);
-                         excelRoadMapdata.country_name = Convert.ToString(dr[2]);
-                         excelRoadMapdata.resource1_name = Convert.ToString(dr[3]);
-                         excelRoadMapdata.resource2_name = Convert.ToString(dr[4]);
-                         excelRoadMapdata.start_date = (Convert.ToDateTime(dr[5])).ToString("dd-MM-yyyy");
-                         excelRoadMapdata.end_date = (Convert.ToDateTime(dr[6])).ToString("dd-MM-yyyy");
+                         excelRoadMapdata.project_name = Convert.ToString(dr[0]).Trim();
+                         excelRoadMapdata.region_name = Convert.ToString(dr[1]).Trim(); ;
+                         excelRoadMapdata.country_name = Convert.ToString(dr[2]).Trim(); 
+                         excelRoadMapdata.resource1_name = Convert.ToString(dr[3]).Trim(); 
+                         excelRoadMapdata.resource2_name = Convert.ToString(dr[4]).Trim(); 
+                         excelRoadMapdata.start_date = (Convert.ToDateTime(Convert.ToString(dr[5]).Trim())).ToString("dd-MM-yyyy");
+                         excelRoadMapdata.end_date = (Convert.ToDateTime(Convert.ToString(dr[6]).Trim())).ToString("dd-MM-yyyy");
                          lstExcelRoadMapdata.Add(excelRoadMapdata);
                          if (Convert.ToString(dr[4]) != "")
                          {
                              excelRoadMapdata = new ExcelRoadMapdata();
-                             excelRoadMapdata.project_name = Convert.ToString(dr[0]);
-                             excelRoadMapdata.region_name = Convert.ToString(dr[1]);
-                             excelRoadMapdata.country_name = Convert.ToString(dr[2]);
-                             excelRoadMapdata.resource1_name = Convert.ToString(dr[4]);
-                             excelRoadMapdata.resource2_name = Convert.ToString(dr[4]);
-                             excelRoadMapdata.start_date = (Convert.ToDateTime(dr[5])).ToString("dd-MM-yyyy");
-                             excelRoadMapdata.end_date = (Convert.ToDateTime(dr[6])).ToString("dd-MM-yyyy");
+                             excelRoadMapdata.project_name = Convert.ToString(dr[0]).Trim();
+                             excelRoadMapdata.region_name = Convert.ToString(dr[1]).Trim();
+                             excelRoadMapdata.country_name = Convert.ToString(dr[2]).Trim();
+                             excelRoadMapdata.resource1_name = Convert.ToString(dr[4]).Trim();
+                             excelRoadMapdata.resource2_name = Convert.ToString(dr[4]).Trim();
+                             excelRoadMapdata.start_date = (Convert.ToDateTime(Convert.ToString(dr[5]).Trim())).ToString("dd-MM-yyyy");
+                             excelRoadMapdata.end_date = (Convert.ToDateTime(Convert.ToString(dr[6]).Trim())).ToString("dd-MM-yyyy");
                              lstExcelRoadMapdata.Add(excelRoadMapdata);
                          }
                      }
-               
+                     //lstExcelRoadMapdata.Sort();
               
                 excelData = new ExcelData();
                 excelData.excelRoadMapdata = lstExcelRoadMapdata;
                 excelData.excelColordata = lstExcelColordata;
-                lstExcelData.Add(excelData);
+                 lstExcelData.Add(excelData);
                 //excelData = new ExcelData();
                 
               //  lstExcelData.Add(excelData);
