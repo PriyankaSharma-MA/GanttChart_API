@@ -47,7 +47,7 @@ namespace GanttChart.Controllers
 
 
                     csvdata = new CSVdata();
-                    csvdata.project_name = Convert.ToString(values[0]).Trim();
+                    csvdata.program_name = Convert.ToString(values[0]).Trim();
                     csvdata.region_name = Convert.ToString(values[1]).Trim();
                     csvdata.country_name = Convert.ToString(values[2]).Trim();
                     csvdata.resource_name = Convert.ToString(values[3]).Trim();
@@ -150,12 +150,16 @@ namespace GanttChart.Controllers
   
             string Roadmapsheet = "Roadmap$";
             string Roadmapcolor = "Color$";
+            string Roadmapresource = "Resource$";
 
             ExcelRoadMapdata excelRoadMapdata;
             ExcelColordata excelColordata;
+            ExcelResourcedata excelResourcedata;
+
             ExcelData excelData;
             List<ExcelRoadMapdata> lstExcelRoadMapdata = new List<ExcelRoadMapdata>();
             List<ExcelColordata> lstExcelColordata = new List<ExcelColordata>();
+            List<ExcelResourcedata> lstExcelResourcedata = new List<ExcelResourcedata>();
             List<ExcelData> lstExcelData = new List<ExcelData>();
             
             try
@@ -180,23 +184,27 @@ namespace GanttChart.Controllers
                 System.Data.DataTable dt = new System.Data.DataTable();
                 System.Data.DataTable dtRoadmap = new System.Data.DataTable();
                 System.Data.DataTable dtColor = new System.Data.DataTable();
+                System.Data.DataTable dtResource = new System.Data.DataTable();
                 cmdExcel.Connection = connExcel;
 
-                //Get the name of First Sheet
-              
-
-              
+                //Get the name of First Sheet              
                
 
                 //Read Data from First Sheet
                 connExcel.Open();
-                cmdExcel.CommandText = "SELECT * From [" + Roadmapsheet + "] ORDER BY 6";
+                cmdExcel.CommandText = "SELECT * From [" + Roadmapsheet + "] ORDER BY 4";
                 oda.SelectCommand = cmdExcel;
                 oda.Fill(dtRoadmap);
-             
+         
                 cmdExcel.CommandText = "SELECT * From [" + Roadmapcolor + "]";
                 oda.SelectCommand = cmdExcel;
                 oda.Fill(dtColor);
+
+                cmdExcel.CommandText = "SELECT * From [" + Roadmapresource + "]";
+                oda.SelectCommand = cmdExcel;
+                oda.Fill(dtResource);
+
+
                 connExcel.Close();
                  var directory = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/CurrentFile"));
     
@@ -204,7 +212,7 @@ namespace GanttChart.Controllers
              
                  FileInfo[] file = d.GetFiles("Roadmap.xlsx");
                  FileInfo excelfile = file[0];
-                 ExcelPackage xlPackage = new ExcelPackage(excelfile,true);
+                 ExcelPackage xlPackage = new ExcelPackage(excelfile,false);
 
                  ExcelWorksheet objSht = xlPackage.Workbook.Worksheets[2];
                  int maxRow = dtColor.Rows.Count+1;
@@ -219,7 +227,7 @@ namespace GanttChart.Controllers
 
                      string color = range[i, 2].Style.Fill.BackgroundColor.Rgb;
                      excelColordata = new ExcelColordata();
-                     excelColordata.project_name = Convert.ToString(range[i, 1].Value).Trim();
+                     excelColordata.program_name = Convert.ToString(range[i, 1].Value).Trim();
                      excelColordata.project_color = range[i, 2].Style.Fill.BackgroundColor.Rgb;
 
                      excelColordata.region_name = Convert.ToString(range[i, 3].Value).Trim();
@@ -230,56 +238,51 @@ namespace GanttChart.Controllers
                      lstExcelColordata.Add(excelColordata);
 
                  }
-                 //foreach (DataRow dr in dtColor.Rows)
-                 //{
-
-                 //    excelColordata = new ExcelColordata();
-                 //    excelColordata.project_name = Convert.ToString(dr[0]);
-                 //    excelColordata.project_color = Convert.ToString(dr[1]);
-
-                 //    excelColordata.region_name = Convert.ToString(dr[2]);
-                 //    excelColordata.region_color = Convert.ToString(dr[3]);
-
-                 //    excelColordata.resource_name = Convert.ToString(dr[4]);
-                 //    excelColordata.resource_color = Convert.ToString(dr[5]);
-                 //    lstExcelColordata.Add(excelColordata);
-                 //}
-                     foreach (DataRow dr in dtRoadmap.Rows)
-                     {
-
-
-                         excelRoadMapdata = new ExcelRoadMapdata();
-                         excelRoadMapdata.project_name = Convert.ToString(dr[0]).Trim();
-                         excelRoadMapdata.region_name = Convert.ToString(dr[1]).Trim(); ;
-                         excelRoadMapdata.country_name = Convert.ToString(dr[2]).Trim(); 
-                         excelRoadMapdata.resource1_name = Convert.ToString(dr[3]).Trim(); 
-                         excelRoadMapdata.resource2_name = Convert.ToString(dr[4]).Trim(); 
-                         excelRoadMapdata.start_date = (Convert.ToDateTime(Convert.ToString(dr[5]).Trim())).ToString("dd-MM-yyyy");
-                         excelRoadMapdata.end_date = (Convert.ToDateTime(Convert.ToString(dr[6]).Trim())).ToString("dd-MM-yyyy");
-                         lstExcelRoadMapdata.Add(excelRoadMapdata);
-                         if (Convert.ToString(dr[4]) != "")
+               
+                 foreach (DataRow dr in dtResource.Rows)
+                 {
+                         excelResourcedata = new ExcelResourcedata();
+                         excelResourcedata.program_name = Convert.ToString(dr[0]).Trim();
+                         excelResourcedata.resource_name = Convert.ToString(dr[1]).Trim();
+                         lstExcelResourcedata.Add(excelResourcedata);
+                         if (Convert.ToString(dr[2]) != "")
                          {
-                             excelRoadMapdata = new ExcelRoadMapdata();
-                             excelRoadMapdata.project_name = Convert.ToString(dr[0]).Trim();
-                             excelRoadMapdata.region_name = Convert.ToString(dr[1]).Trim();
-                             excelRoadMapdata.country_name = Convert.ToString(dr[2]).Trim();
-                             excelRoadMapdata.resource1_name = Convert.ToString(dr[4]).Trim();
-                             excelRoadMapdata.resource2_name = Convert.ToString(dr[4]).Trim();
-                             excelRoadMapdata.start_date = (Convert.ToDateTime(Convert.ToString(dr[5]).Trim())).ToString("dd-MM-yyyy");
-                             excelRoadMapdata.end_date = (Convert.ToDateTime(Convert.ToString(dr[6]).Trim())).ToString("dd-MM-yyyy");
-                             lstExcelRoadMapdata.Add(excelRoadMapdata);
+                             excelResourcedata = new ExcelResourcedata();
+                             excelResourcedata.program_name = Convert.ToString(dr[0]).Trim();
+                             excelResourcedata.resource_name = Convert.ToString(dr[2]).Trim();
+                             lstExcelResourcedata.Add(excelResourcedata);
                          }
+                }
+                 foreach (DataRow dr in dtRoadmap.Rows)
+                 {
+
+                     
+                    
+                     var resourcelist = lstExcelResourcedata.Where(x => x.program_name == Convert.ToString(dr[0]).Trim())
+                           .ToList();
+                     for (int i = 0; i < resourcelist.Count;i++ )
+                     {
+                         excelRoadMapdata = new ExcelRoadMapdata();
+                         excelRoadMapdata.program_name = Convert.ToString(dr[0]).Trim();
+                         excelRoadMapdata.region_name = Convert.ToString(dr[1]).Trim(); ;
+                         excelRoadMapdata.country_name = Convert.ToString(dr[2]).Trim();
+                         excelRoadMapdata.start_date = (Convert.ToDateTime(Convert.ToString(dr[3]).Trim())).ToString("dd-MM-yyyy");
+                         excelRoadMapdata.end_date = (Convert.ToDateTime(Convert.ToString(dr[4]).Trim())).ToString("dd-MM-yyyy");
+                         excelRoadMapdata.resource_name = Convert.ToString(resourcelist[i].resource_name.Trim()); ;
+                         lstExcelRoadMapdata.Add(excelRoadMapdata);
                      }
-                     //lstExcelRoadMapdata.Sort();
+
+                        
+
+                 }
               
                 excelData = new ExcelData();
                 excelData.excelRoadMapdata = lstExcelRoadMapdata;
                 excelData.excelColordata = lstExcelColordata;
-                 lstExcelData.Add(excelData);
-                //excelData = new ExcelData();
                 
-              //  lstExcelData.Add(excelData);
-               
+                lstExcelData.Add(excelData);
+                //excelData = new ExcelData();                
+              //  lstExcelData.Add(excelData);              
           
             }
             catch (Exception ex)
@@ -289,6 +292,7 @@ namespace GanttChart.Controllers
             return lstExcelData;
 
         }
+
         [NonAction]
         // [ActionName("UploadFile")]
         public string PostUpload()
@@ -322,77 +326,6 @@ namespace GanttChart.Controllers
             }
             return "~/CSV" + file.FileName;
         }
-        public static StringBuilder Decryptpassword(string cipherText)
-        {
-            cipherText = Regex.Replace(cipherText, ".{6}", "$0,");
-            string[] cahractergroup = cipherText.Split(',');
-            StringBuilder decryptpassword = new StringBuilder();
-            Dictionary<string, char> decryptcodelist = new Dictionary<string, char>();
-            decryptcodelist.Add("uDFM45", 'a');
-            decryptcodelist.Add("H21DGF", 'b');
-            decryptcodelist.Add("FDH56D", 'c');
-            decryptcodelist.Add("FGS546", 'd');
-            decryptcodelist.Add("JUK4JH", 'e');
-            decryptcodelist.Add("ERG54S", 'f');
-
-            decryptcodelist.Add("T5H4FD", 'g');
-            decryptcodelist.Add("RG641G", 'h');
-            decryptcodelist.Add("RG4F4D", 'i');
-            decryptcodelist.Add("RT56F6", 'j');
-            decryptcodelist.Add("VCBC3B", 'k');
-            decryptcodelist.Add("F8G9GF", 'l');
-
-            decryptcodelist.Add("FD4CJS", 'm');
-            decryptcodelist.Add("G423FG", 'n');
-            decryptcodelist.Add("F45GC2", 'o');
-            decryptcodelist.Add("TH5DF5", 'p');
-            decryptcodelist.Add("CV4F6R", 'q');
-            decryptcodelist.Add("XF64TS", 'r');
-
-            decryptcodelist.Add("X78DGT", 's');
-            decryptcodelist.Add("TH74SJ", 't');
-            decryptcodelist.Add("bCX6DF", 'u');
-            decryptcodelist.Add("FG65SD", 'v');
-            decryptcodelist.Add("4KL45D", 'w');
-            decryptcodelist.Add("GFH3F2", 'x');
-
-            decryptcodelist.Add("GH56GF", 'y');
-            decryptcodelist.Add("45T1FG", 'z');
-            decryptcodelist.Add("D4G23D", '1');
-            decryptcodelist.Add("GB56FG", '2');
-            decryptcodelist.Add("sF45GF", '3');
-            decryptcodelist.Add("P4FF12", '4');
-
-            decryptcodelist.Add("F6DFG1", '5');
-            decryptcodelist.Add("56FG4G", '6');
-            decryptcodelist.Add("uSGFDG", '7');
-            decryptcodelist.Add("FKHFDG", '8');
-            decryptcodelist.Add("iFGJH6", '9');
-            decryptcodelist.Add("87H8G7", '0');
-
-            decryptcodelist.Add("G25GHF", '@');
-            decryptcodelist.Add("45FGFH", '#');
-            decryptcodelist.Add("75FG45", '$');
-            decryptcodelist.Add("54GDH5", '*');
-            decryptcodelist.Add("45F465", '(');
-            decryptcodelist.Add("HG56FG", '.');
-
-            decryptcodelist.Add("DF56H4", ',');
-            decryptcodelist.Add("F5JHFH", '-');
-            decryptcodelist.Add("sGF4HF", '=');
-            decryptcodelist.Add("45GH45", '\\');
-            decryptcodelist.Add("56H45G", '/');
-
-
-            for (int i = 0; i < cahractergroup.Length - 1; i++)
-            {
-                decryptpassword = decryptpassword.Append(decryptcodelist[cahractergroup[i]]);
-
-
-            }
-
-            return decryptpassword;
-        }
-
+ 
     }
 }
