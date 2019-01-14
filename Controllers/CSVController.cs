@@ -95,7 +95,7 @@ namespace GanttChart.Controllers
             WebClient webClient = new WebClient();
             webClient.DownloadFile(SharepointPath, destpath);
           
-            var archivefileName = "Global_IT_Roadmap" + "_" + DateTime.Now.ToString("MMddyyhhmm");
+            var archivefileName = "Global_IT_Roadmap" + "_" + DateTime.Now.ToString("MMddyyyyhhmm");
             var archivepath = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/Archive"), archivefileName + ".xlsx");
 
             webClient.DownloadFile(SharepointPath, archivepath);
@@ -155,6 +155,20 @@ namespace GanttChart.Controllers
         [ActionName("GetAllExcelData")]
         public List<ExcelData> GetAllExcelData([FromUri] string filename)
         {
+            string conStr = "", Extension = ".xlsx";
+            switch (Extension)
+            {
+                case ".xls": //Excel 97-03
+                    conStr = ConfigurationManager.ConnectionStrings["Excel03ConString"]
+                             .ConnectionString;
+                    break;
+                case ".xlsx": //Excel 07
+                    conStr = ConfigurationManager.ConnectionStrings["Excel07ConString"]
+                              .ConnectionString;
+                    break;
+            }
+            conStr = String.Format(conStr, Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/CurrentFile"), filename));
+            OleDbConnection connExcel = new OleDbConnection(conStr);
 
             string Roadmapsheet = "Official Roadmap$";
             string Roadmapcolor = "Color$";
@@ -173,20 +187,9 @@ namespace GanttChart.Controllers
             try
             {
 
-                string conStr = "", Extension = ".xlsx";
-                switch (Extension)
-                {
-                    case ".xls": //Excel 97-03
-                        conStr = ConfigurationManager.ConnectionStrings["Excel03ConString"]
-                                 .ConnectionString;
-                        break;
-                    case ".xlsx": //Excel 07
-                        conStr = ConfigurationManager.ConnectionStrings["Excel07ConString"]
-                                  .ConnectionString;
-                        break;
-                }
-                conStr = String.Format(conStr, Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/CurrentFile"), filename));
-                OleDbConnection connExcel = new OleDbConnection(conStr);
+             
+             
+              
                 OleDbCommand cmdExcel = new OleDbCommand();
                 OleDbDataAdapter oda = new OleDbDataAdapter();
                 System.Data.DataTable dt = new System.Data.DataTable();
@@ -268,6 +271,8 @@ namespace GanttChart.Controllers
                     DataRow row = dtRoadmap.Rows[0];
                     dtRoadmap.Rows.Remove(row);
                 }
+                dtRoadmap.DefaultView.Sort = "F5 ASC"; 
+              //  dtRoadmap=dtRoadmap.Select().OrderBy()
                 foreach (DataRow dr in dtRoadmap.Rows)
                 {
                     if (dr[0].ToString() == "")
@@ -294,6 +299,7 @@ namespace GanttChart.Controllers
                 }
 
                 excelData = new ExcelData();
+                lstExcelRoadMapdata = lstExcelRoadMapdata.OrderBy(o => Convert.ToDateTime(o.start_date)).ToList();
                 excelData.excelRoadMapdata = lstExcelRoadMapdata;
                 excelData.excelColordata = lstExcelColordata;
 
@@ -304,7 +310,7 @@ namespace GanttChart.Controllers
             }
             catch (Exception ex)
             {
-
+                connExcel.Close();
             }
             return lstExcelData;
 
