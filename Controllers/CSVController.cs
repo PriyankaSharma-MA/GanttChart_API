@@ -30,6 +30,9 @@ namespace GanttChart.Controllers
     public class CSVController : ApiController
     {
         string CSVPath = System.Configuration.ConfigurationManager.AppSettings["CSVPath"];
+        string SharepointPath = System.Configuration.ConfigurationManager.AppSettings["SharepointPath"];
+        string Sharepointfilename = System.Configuration.ConfigurationManager.AppSettings["Sharepointfilename"]; 
+
         [NonAction]
         public List<CSVdata> ReadCsvFile()
         {
@@ -82,6 +85,23 @@ namespace GanttChart.Controllers
 
         }
         [HttpPost]
+        [ActionName("uploadSharePointFile")]
+        public void uploadSharePointFile()
+        {
+
+
+            var destpath = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/CurrentFile"), "Global_IT_Roadmap.xlsx");
+
+            WebClient webClient = new WebClient();
+            webClient.DownloadFile(SharepointPath, destpath);
+          
+            var archivefileName = "Global_IT_Roadmap" + "_" + DateTime.Now.ToString("MMddyyhhmm");
+            var archivepath = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/Archive"), archivefileName + ".xlsx");
+
+            webClient.DownloadFile(SharepointPath, archivepath);
+        }
+
+        [HttpPost]
         [ActionName("uploadHistoryFile")]
         public void uploadHistoryFile(string filename)
         {
@@ -92,24 +112,12 @@ namespace GanttChart.Controllers
 
             FileInfo[] archiveFiles = d.GetFiles(filename); //Getting Text files
 
-            var destpath = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/CurrentFile"), "Roadmap.xlsx");
-            FileInfo[] deleteFiles = d.GetFiles("Roadmap.xlsx");
-            //foreach (FileInfo file in deleteFiles)
-            //{
-            //    file.Delete();
-
-            //}
+            var destpath = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/CurrentFile"), "Global_IT_Roadmap.xlsx");
+            FileInfo[] deleteFiles = d.GetFiles("Global_IT_Roadmap.xlsx");
             foreach (FileInfo file in archiveFiles)
             {
-                // System.IO.File.Copy(file.Name.Split('.')[0], path1.ToString());
-                //file.MoveTo(destpath);
-
-
                 file.CreationTime = DateTime.Now;
                 file.CopyTo(destpath, true);
-                // file.MoveTo(destpath);
-                // file.Replace(destpath, "kk.xlsx");
-                //    file.Replace(path1, path1);
             }
         }
         [HttpGet]
@@ -147,10 +155,10 @@ namespace GanttChart.Controllers
         [ActionName("GetAllExcelData")]
         public List<ExcelData> GetAllExcelData([FromUri] string filename)
         {
-  
-            string Roadmapsheet = "Roadmap$";
+
+            string Roadmapsheet = "Official Roadmap$";
             string Roadmapcolor = "Color$";
-            string Roadmapresource = "Resource$";
+            string Roadmapresource = "ProgramOverview$";
 
             ExcelRoadMapdata excelRoadMapdata;
             ExcelColordata excelColordata;
@@ -161,7 +169,7 @@ namespace GanttChart.Controllers
             List<ExcelColordata> lstExcelColordata = new List<ExcelColordata>();
             List<ExcelResourcedata> lstExcelResourcedata = new List<ExcelResourcedata>();
             List<ExcelData> lstExcelData = new List<ExcelData>();
-            
+
             try
             {
 
@@ -177,7 +185,7 @@ namespace GanttChart.Controllers
                                   .ConnectionString;
                         break;
                 }
-                conStr = String.Format(conStr, Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/CurrentFile"),filename ));
+                conStr = String.Format(conStr, Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/CurrentFile"), filename));
                 OleDbConnection connExcel = new OleDbConnection(conStr);
                 OleDbCommand cmdExcel = new OleDbCommand();
                 OleDbDataAdapter oda = new OleDbDataAdapter();
@@ -188,14 +196,15 @@ namespace GanttChart.Controllers
                 cmdExcel.Connection = connExcel;
 
                 //Get the name of First Sheet              
-               
+
 
                 //Read Data from First Sheet
                 connExcel.Open();
-                cmdExcel.CommandText = "SELECT * From [" + Roadmapsheet + "] ORDER BY 4";
+               // cmdExcel.CommandText = "SELECT * From [" + Roadmapsheet + "A11:F197" + "] ORDER BY 5";
+                cmdExcel.CommandText = "SELECT * From [" + Roadmapsheet  + "]";
                 oda.SelectCommand = cmdExcel;
                 oda.Fill(dtRoadmap);
-         
+
                 cmdExcel.CommandText = "SELECT * From [" + Roadmapcolor + "]";
                 oda.SelectCommand = cmdExcel;
                 oda.Fill(dtColor);
@@ -206,84 +215,92 @@ namespace GanttChart.Controllers
 
 
                 connExcel.Close();
-                 var directory = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/CurrentFile"));
-    
-                  DirectoryInfo d = new DirectoryInfo(directory);//Assuming Test is your Folder
-             
-                 FileInfo[] file = d.GetFiles("Roadmap.xlsx");
-                 FileInfo excelfile = file[0];
-                 ExcelPackage xlPackage = new ExcelPackage(excelfile,false);
+                var directory = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/CurrentFile"));
 
-                 ExcelWorksheet objSht = xlPackage.Workbook.Worksheets[2];
-                 int maxRow = dtColor.Rows.Count+1;
-                 int maxCol = 6;
+                DirectoryInfo d = new DirectoryInfo(directory);//Assuming Test is your Folder
 
+                FileInfo[] file = d.GetFiles("Global_IT_Roadmap.xlsx");
+                FileInfo excelfile = file[0];
+                ExcelPackage xlPackage = new ExcelPackage(excelfile, false);
 
-                 OfficeOpenXml.ExcelRange range = objSht.Cells[1, 1, maxRow, maxCol];
+                ExcelWorksheet objSht = xlPackage.Workbook.Worksheets["Color"];
+                int maxRow = dtColor.Rows.Count + 1;
+                int maxCol = 6;
 
 
-                 for (int i = 2; i <= maxRow; i++)
-                 {
+                OfficeOpenXml.ExcelRange range = objSht.Cells[1, 1, maxRow, maxCol];
 
-                     string color = range[i, 2].Style.Fill.BackgroundColor.Rgb;
-                     excelColordata = new ExcelColordata();
-                     excelColordata.program_name = Convert.ToString(range[i, 1].Value).Trim();
-                     excelColordata.project_color = range[i, 2].Style.Fill.BackgroundColor.Rgb;
 
-                     excelColordata.region_name = Convert.ToString(range[i, 3].Value).Trim();
-                     excelColordata.region_color = range[i, 4].Style.Fill.BackgroundColor.Rgb;
+                for (int i = 2; i <= maxRow; i++)
+                {
 
-                     excelColordata.resource_name = Convert.ToString(range[i, 5].Value).Trim();
-                     excelColordata.resource_color = range[i, 6].Style.Fill.BackgroundColor.Rgb;
-                     lstExcelColordata.Add(excelColordata);
+                    string color = range[i, 2].Style.Fill.BackgroundColor.Rgb;
+                    excelColordata = new ExcelColordata();
+                    excelColordata.program_name = Convert.ToString(range[i, 1].Value).Trim();
+                    excelColordata.project_color = range[i, 2].Style.Fill.BackgroundColor.Rgb;
 
-                 }
-               
-                 foreach (DataRow dr in dtResource.Rows)
-                 {
-                         excelResourcedata = new ExcelResourcedata();
-                         excelResourcedata.program_name = Convert.ToString(dr[0]).Trim();
-                         excelResourcedata.resource_name = Convert.ToString(dr[1]).Trim();
-                         lstExcelResourcedata.Add(excelResourcedata);
-                         if (Convert.ToString(dr[2]) != "")
-                         {
-                             excelResourcedata = new ExcelResourcedata();
-                             excelResourcedata.program_name = Convert.ToString(dr[0]).Trim();
-                             excelResourcedata.resource_name = Convert.ToString(dr[2]).Trim();
-                             lstExcelResourcedata.Add(excelResourcedata);
-                         }
+                    excelColordata.region_name = Convert.ToString(range[i, 3].Value).Trim();
+                    excelColordata.region_color = range[i, 4].Style.Fill.BackgroundColor.Rgb;
+
+                    excelColordata.resource_name = Convert.ToString(range[i, 5].Value).Trim();
+                    excelColordata.resource_color = range[i, 6].Style.Fill.BackgroundColor.Rgb;
+                    lstExcelColordata.Add(excelColordata);
+
                 }
-                 foreach (DataRow dr in dtRoadmap.Rows)
-                 {
 
-                     
-                    
-                     var resourcelist = lstExcelResourcedata.Where(x => x.program_name == Convert.ToString(dr[0]).Trim())
-                           .ToList();
-                     for (int i = 0; i < resourcelist.Count;i++ )
-                     {
-                         excelRoadMapdata = new ExcelRoadMapdata();
-                         excelRoadMapdata.program_name = Convert.ToString(dr[0]).Trim();
-                         excelRoadMapdata.region_name = Convert.ToString(dr[1]).Trim(); ;
-                         excelRoadMapdata.country_name = Convert.ToString(dr[2]).Trim();
-                         excelRoadMapdata.start_date = (Convert.ToDateTime(Convert.ToString(dr[3]).Trim())).ToString("dd-MM-yyyy");
-                         excelRoadMapdata.end_date = (Convert.ToDateTime(Convert.ToString(dr[4]).Trim())).ToString("dd-MM-yyyy");
-                         excelRoadMapdata.resource_name = Convert.ToString(resourcelist[i].resource_name.Trim()); ;
-                         lstExcelRoadMapdata.Add(excelRoadMapdata);
-                     }
+                foreach (DataRow dr in dtResource.Rows)
+                {
+                    excelResourcedata = new ExcelResourcedata();
+                    excelResourcedata.program_name = Convert.ToString(dr[0]).Trim();
+                    excelResourcedata.resource_name = Convert.ToString(dr[3]).Trim();
+                    lstExcelResourcedata.Add(excelResourcedata);
+                    if (Convert.ToString(dr[5]) != "")
+                    {
+                        excelResourcedata = new ExcelResourcedata();
+                        excelResourcedata.program_name = Convert.ToString(dr[0]).Trim();
+                        excelResourcedata.resource_name = Convert.ToString(dr[5]).Trim();
+                        lstExcelResourcedata.Add(excelResourcedata);
+                    }
+                }
 
-                        
+                for (int i = 0; i < 9; i++)
+                {
+                    DataRow row = dtRoadmap.Rows[0];
+                    dtRoadmap.Rows.Remove(row);
+                }
+                foreach (DataRow dr in dtRoadmap.Rows)
+                {
+                    if (dr[0].ToString() == "")
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        var resourcelist = lstExcelResourcedata.Where(x => x.program_name == Convert.ToString(dr[0]).Trim())
+                              .ToList();
+                        for (int i = 0; i < resourcelist.Count; i++)
+                        {
+                            excelRoadMapdata = new ExcelRoadMapdata();
+                            excelRoadMapdata.program_name = Convert.ToString(dr[0]).Trim();
+                            excelRoadMapdata.region_name = Convert.ToString(dr[2]).Trim(); ;
+                            excelRoadMapdata.country_name = Convert.ToString(dr[3]).Trim();
+                            excelRoadMapdata.start_date = (Convert.ToDateTime(Convert.ToString(dr[4]).Trim())).ToString("dd-MM-yyyy");
+                            excelRoadMapdata.end_date = (Convert.ToDateTime(Convert.ToString(dr[5]).Trim())).ToString("dd-MM-yyyy");
+                            excelRoadMapdata.resource_name = Convert.ToString(resourcelist[i].resource_name.Trim()); ;
+                            lstExcelRoadMapdata.Add(excelRoadMapdata);
+                        }
 
-                 }
-              
+                    }
+                }
+
                 excelData = new ExcelData();
                 excelData.excelRoadMapdata = lstExcelRoadMapdata;
                 excelData.excelColordata = lstExcelColordata;
-                
+
                 lstExcelData.Add(excelData);
                 //excelData = new ExcelData();                
-              //  lstExcelData.Add(excelData);              
-          
+                //  lstExcelData.Add(excelData);              
+
             }
             catch (Exception ex)
             {
@@ -318,14 +335,14 @@ namespace GanttChart.Controllers
             {
                 var splitfileextension = file.FileName.Split('.');
                 fileName = Path.GetFileName(splitfileextension[0].Replace(' ', '_')) + "_" + DateTime.Now.ToString("MMddyyyyhhmmss") + "." + splitfileextension[1];
-                var path = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/Archive"), fileName);
+                var archivepath = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/Archive"), fileName);
 
-                file.SaveAs(path);
-                var path1 = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/CurrentFile"), "Roadmap.xlsx");
-                file.SaveAs(path1);
+                file.SaveAs(archivepath);
+                var currentpath = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/CurrentFile"), "Global_IT_Roadmap.xlsx");
+                file.SaveAs(currentpath);
             }
             return "~/CSV" + file.FileName;
         }
- 
+
     }
 }
