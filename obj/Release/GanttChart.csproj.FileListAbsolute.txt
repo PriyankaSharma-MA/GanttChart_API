@@ -16,7 +16,6 @@ C:\OTIS_project\GanttChart\GanttChart\GanttChart\bin\Antlr3.Runtime.pdb
 C:\OTIS_project\GanttChart\GanttChart\GanttChart\obj\Release\GanttChart.dll
 C:\OTIS_project\GanttChart\GanttChart\GanttChart\obj\Release\GanttChart.pdb
 C:\OTIS_project\GanttChart\GanttChart\GanttChart\obj\Release\GanttChart.csprojResolveAssemblyReference.cache
-C:\OTIS_project\GanttChart\GanttChart\GanttChart\bin\CSharpJExcel.dll
 C:\OTIS_project\GanttChart\GanttChart\GanttChart\bin\ExcelLibrary.dll
 C:\OTIS_project\GanttChart\GanttChart\GanttChart\bin\CSharpJExcel.pdb
 C:\OTIS_project\GanttChart\GanttChart\GanttChart\obj\Release\Interop.LCC11.dll

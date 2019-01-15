@@ -86,38 +86,56 @@ namespace GanttChart.Controllers
         }
         [HttpPost]
         [ActionName("uploadSharePointFile")]
-        public void uploadSharePointFile()
+        public string uploadSharePointFile()
         {
+            string result = "success";
+            try
+            {
 
+                var destpath = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/CurrentFile"), "Global_IT_Roadmap.xlsx");
 
-            var destpath = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/CurrentFile"), "Global_IT_Roadmap.xlsx");
+                WebClient webClient = new WebClient();
+                webClient.DownloadFile(SharepointPath, destpath);
 
-            WebClient webClient = new WebClient();
-            webClient.DownloadFile(SharepointPath, destpath);
-          
-            var archivefileName = "Global_IT_Roadmap" + "_" + DateTime.Now.ToString("MMddyyyyhhmm");
-            var archivepath = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/Archive"), archivefileName + ".xlsx");
+                var archivefileName = "Global_IT_Roadmap" + "_" + DateTime.Now.ToString("MMddyyhhmm");
+                var archivepath = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/Archive"), archivefileName + ".xlsx");
 
-            webClient.DownloadFile(SharepointPath, archivepath);
+                webClient.DownloadFile(SharepointPath, archivepath);
+                return result;
+            }
+            catch(Exception ex)
+            {
+                return ex.ToString();
+            }
+
         }
 
         [HttpPost]
         [ActionName("uploadHistoryFile")]
-        public void uploadHistoryFile(string filename)
+        public string uploadHistoryFile(string filename)
         {
-
-            var archivepath = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/Archive"));
-            // string[] filePaths = Directory.GetFiles(path, filename);
-            DirectoryInfo d = new DirectoryInfo(archivepath);//Assuming Test is your Folder
-
-            FileInfo[] archiveFiles = d.GetFiles(filename); //Getting Text files
-
-            var destpath = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/CurrentFile"), "Global_IT_Roadmap.xlsx");
-            FileInfo[] deleteFiles = d.GetFiles("Global_IT_Roadmap.xlsx");
-            foreach (FileInfo file in archiveFiles)
+            string result = "success";
+            try
             {
-                file.CreationTime = DateTime.Now;
-                file.CopyTo(destpath, true);
+
+                var archivepath = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/Archive"));
+                // string[] filePaths = Directory.GetFiles(path, filename);
+                DirectoryInfo d = new DirectoryInfo(archivepath);//Assuming Test is your Folder
+
+                FileInfo[] archiveFiles = d.GetFiles(filename); //Getting Text files
+
+                var destpath = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/CurrentFile"), "Global_IT_Roadmap.xlsx");
+                FileInfo[] deleteFiles = d.GetFiles("Global_IT_Roadmap.xlsx");
+                foreach (FileInfo file in archiveFiles)
+                {
+                    file.CreationTime = DateTime.Now;
+                    file.CopyTo(destpath, true);
+                }
+                return result;
+            }
+            catch(Exception ex)
+            {
+                return ex.ToString();
             }
         }
         [HttpGet]
@@ -271,8 +289,7 @@ namespace GanttChart.Controllers
                     DataRow row = dtRoadmap.Rows[0];
                     dtRoadmap.Rows.Remove(row);
                 }
-                dtRoadmap.DefaultView.Sort = "F5 ASC"; 
-              //  dtRoadmap=dtRoadmap.Select().OrderBy()
+
                 foreach (DataRow dr in dtRoadmap.Rows)
                 {
                     if (dr[0].ToString() == "")
@@ -310,6 +327,12 @@ namespace GanttChart.Controllers
             }
             catch (Exception ex)
             {
+                excelData = new ExcelData();
+                excelRoadMapdata = new ExcelRoadMapdata();
+                excelRoadMapdata.program_name = ex.ToString();
+                lstExcelRoadMapdata.Add(excelRoadMapdata);
+                excelData.excelRoadMapdata = lstExcelRoadMapdata;
+                lstExcelData.Add(excelData);
                 connExcel.Close();
             }
             return lstExcelData;
