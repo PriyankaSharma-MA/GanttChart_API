@@ -52,7 +52,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>11/20/2018 21:37:41</publishTime>
     </File>
     <File Include="bin/CSharpJExcel.dll">
-      <publishTime>12/03/2010 14:04:18</publishTime>
+      <publishTime>03/12/2010 14:04:18</publishTime>
     </File>
     <File Include="bin/EPPlus.dll">
       <publishTime>12/21/2018 12:41:38</publishTime>
@@ -61,10 +61,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/30/2011 15:40:26</publishTime>
     </File>
     <File Include="bin/GanttChart.dll">
-      <publishTime>01/15/2019 14:17:31</publishTime>
+      <publishTime>01/16/2019 22:23:24</publishTime>
     </File>
     <File Include="bin/GanttChart.dll.config">
-      <publishTime>01/15/2019 13:57:52</publishTime>
+      <publishTime>01/15/2019 17:10:55</publishTime>
     </File>
     <File Include="bin/Microsoft.Web.Infrastructure.dll">
       <publishTime>11/20/2018 21:37:37</publishTime>
@@ -178,7 +178,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>11/20/2018 21:37:33</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>01/15/2019 14:03:45</publishTime>
+      <publishTime>01/16/2019 22:09:35</publishTime>
     </File>
   </ItemGroup>
 </Project>
