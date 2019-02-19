@@ -1,0 +1,24 @@
+-----------------------------------------------------------------------------
+Date : 19-02-2019 11:54:21
+
+System.Net.WebException
+Message : The remote server returned an error: (404) Not Found.
+StackTrace :    at System.Net.WebClient.OpenRead(Uri address)
+   at System.Net.WebClient.OpenRead(String address)
+   at GanttChart.Controllers.CSVController.uploadSharePointFile() in c:\OTIS_project\GanttChart_API\GanttChart\GanttChart\Controllers\CSVController.cs:line 241
+-----------------------------------------------------------------------------
+Date : 19-02-2019 22:57:41
+
+System.Net.WebException
+Message : The remote server returned an error: (404) Not Found.
+StackTrace :    at System.Net.WebClient.OpenRead(Uri address)
+   at System.Net.WebClient.OpenRead(String address)
+   at GanttChart.Controllers.CSVController.uploadSharePointFile() in c:\OTIS_project\GanttChart_API\GanttChart\GanttChart\Controllers\CSVController.cs:line 241
+-----------------------------------------------------------------------------
+Date : 20-02-2019 00:06:08
+
+System.Net.WebException
+Message : The remote server returned an error: (404) Not Found.
+StackTrace :    at System.Net.WebClient.OpenRead(Uri address)
+   at System.Net.WebClient.OpenRead(String address)
+   at GanttChart.Controllers.CSVController.uploadSharePointFile() in c:\OTIS_project\GanttChart_API\GanttChart\GanttChart\Controllers\CSVController.cs:line 241

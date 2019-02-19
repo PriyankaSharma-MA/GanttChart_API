@@ -17,13 +17,9 @@ using System.Drawing;
 using System.Text;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
-//using  Microsoft.Office.Interop.Excel;
-//using ExcelLibrary;
-
-//using CSharpJExcel.Jxl;
 using OfficeOpenXml;
-
-
+using System.Diagnostics;
+using GanttChart.App_Code;
 
 namespace GanttChart.Controllers
 {
@@ -31,147 +27,14 @@ namespace GanttChart.Controllers
     {
         string CSVPath = System.Configuration.ConfigurationManager.AppSettings["CSVPath"];
         string SharepointPath = System.Configuration.ConfigurationManager.AppSettings["SharepointPath"];
-        string Sharepointfilename = System.Configuration.ConfigurationManager.AppSettings["Sharepointfilename"]; 
+        string Sharepointfilename = System.Configuration.ConfigurationManager.AppSettings["Sharepointfilename"];
+       // string Username = System.Configuration.ConfigurationManager.AppSettings["UserName"];
+      //  string Password = System.Configuration.ConfigurationManager.AppSettings["Password"];
+     
 
-        [NonAction]
-        public List<CSVdata> ReadCsvFile()
-        {
-
-            CSVdata csvdata;
-            List<CSVdata> csvdataList = new List<CSVdata>();
-
-            using (var reader = new StreamReader(Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/CurrentFile"), "sampleCSV.csv")))
-            {
-
-                while (!reader.EndOfStream)
-                {
-                    var line = reader.ReadLine();
-                    var values = line.Split(',');
-
-
-                    csvdata = new CSVdata();
-                    csvdata.program_name = Convert.ToString(values[0]).Trim();
-                    csvdata.region_name = Convert.ToString(values[1]).Trim();
-                    csvdata.country_name = Convert.ToString(values[2]).Trim();
-                    csvdata.resource_name = Convert.ToString(values[3]).Trim();
-
-
-                    csvdata.start_date = Convert.ToString(values[4].Replace('/', '-')).Trim();
-                    csvdata.end_date = Convert.ToString(values[5].Replace('/', '-')).Trim();
-
-                    csvdataList.Add(csvdata);
-                }
-            }
-
-            return csvdataList.Skip(1).ToList();
-        }
         [HttpGet]
-        [ActionName("GetAllCSVData")]
-        public List<CSVdata> GetAllCSVData([FromUri] string filename)
-        {
-            List<CSVdata> csvdataList = new List<CSVdata>();
-
-            try
-            {
-                string requestPath = filename;
-                csvdataList = ReadCsvFile();
-            }
-            catch (Exception ex)
-            {
-                //OTIS_Subscription_API.App_Code.LoggerHelper.ExcpLogger("FormatController", "GetAllFormat", ex);
-                csvdataList = null;
-            }
-            return csvdataList;
-
-        }
-        [HttpPost]
-        [ActionName("uploadSharePointFile")]
-        public string uploadSharePointFile()
-        {
-            string result = "success";
-            try
-            {
-
-                var destpath = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/CurrentFile"), "Global_IT_Roadmap.xlsx");
-
-                WebClient webClient = new WebClient();
-                webClient.DownloadFile(SharepointPath, destpath);
-
-                var archivefileName = "Global_IT_Roadmap" + "_" + DateTime.Now.ToString("MMddyyhhmm");
-                var archivepath = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/Archive"), archivefileName + ".xlsx");
-
-                webClient.DownloadFile(SharepointPath, archivepath);
-                return result;
-            }
-            catch(Exception ex)
-            {
-                return ex.ToString();
-            }
-
-        }
-
-        [HttpPost]
-        [ActionName("uploadHistoryFile")]
-        public string uploadHistoryFile(string filename)
-        {
-            string result = "success";
-            try
-            {
-
-                var archivepath = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/Archive"));
-                // string[] filePaths = Directory.GetFiles(path, filename);
-                DirectoryInfo d = new DirectoryInfo(archivepath);//Assuming Test is your Folder
-
-                FileInfo[] archiveFiles = d.GetFiles(filename); //Getting Text files
-
-                var destpath = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/CurrentFile"), "Global_IT_Roadmap.xlsx");
-                FileInfo[] deleteFiles = d.GetFiles("Global_IT_Roadmap.xlsx");
-                foreach (FileInfo file in archiveFiles)
-                {
-                    file.CreationTime = DateTime.Now;
-                    file.CopyTo(destpath, true);
-                }
-                return result;
-            }
-            catch(Exception ex)
-            {
-                return ex.ToString();
-            }
-        }
-        [HttpGet]
-        [ActionName("GetArchive")]
-        public List<HistoryFiledata> GetAllHistory()
-        {
-            List<HistoryFiledata> lsthistoryFiledata = new List<HistoryFiledata>();
-            HistoryFiledata historyFiledata;
-            try
-            {
-                //  var fileName = Path.GetFileName(file.FileName);
-                var path = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/Archive"));
-                //string[] filePaths = Directory.GetFiles(path, "*.xlsx");
-                DirectoryInfo d = new DirectoryInfo(path);//Assuming Test is your Folder
-
-                FileInfo[] Files = d.GetFiles("*.xlsx").OrderByDescending(p => p.CreationTime).ToArray(); //Getting Text files
-
-                foreach (FileInfo file in Files)
-                {
-                    historyFiledata = new HistoryFiledata();
-                    historyFiledata.file_name = file.Name;
-                    lsthistoryFiledata.Add(historyFiledata);
-                }
-
-            }
-            catch (Exception ex)
-            {
-                //OTIS_Subscription_API.App_Code.LoggerHelper.ExcpLogger("FormatController", "GetAllFormat", ex);
-                lsthistoryFiledata = null;
-            }
-            return lsthistoryFiledata;
-
-        }
-        [HttpGet]
-        [ActionName("GetAllExcelData")]
-        public List<ExcelData> GetAllExcelData([FromUri] string filename)
+        [ActionName("getAllExcelData")]
+        public List<ExcelData> getAllExcelData([FromUri] string filename)
         {
             string conStr = "", Extension = ".xlsx";
             switch (Extension)
@@ -205,9 +68,6 @@ namespace GanttChart.Controllers
             try
             {
 
-             
-             
-              
                 OleDbCommand cmdExcel = new OleDbCommand();
                 OleDbDataAdapter oda = new OleDbDataAdapter();
                 System.Data.DataTable dt = new System.Data.DataTable();
@@ -221,8 +81,8 @@ namespace GanttChart.Controllers
 
                 //Read Data from First Sheet
                 connExcel.Open();
-               // cmdExcel.CommandText = "SELECT * From [" + Roadmapsheet + "A11:F197" + "] ORDER BY 5";
-                cmdExcel.CommandText = "SELECT * From [" + Roadmapsheet  + "]";
+                // cmdExcel.CommandText = "SELECT * From [" + Roadmapsheet + "A11:F197" + "] ORDER BY 5";
+                cmdExcel.CommandText = "SELECT * From [" + Roadmapsheet + "]";
                 oda.SelectCommand = cmdExcel;
                 oda.Fill(dtRoadmap);
 
@@ -275,11 +135,11 @@ namespace GanttChart.Controllers
                     excelResourcedata.program_name = Convert.ToString(dr[0]).Trim();
                     excelResourcedata.resource_name = Convert.ToString(dr[3]).Trim();
                     lstExcelResourcedata.Add(excelResourcedata);
-                    if (Convert.ToString(dr[5]) != "")
+                    if (Convert.ToString(dr[6]) != "")
                     {
                         excelResourcedata = new ExcelResourcedata();
                         excelResourcedata.program_name = Convert.ToString(dr[0]).Trim();
-                        excelResourcedata.resource_name = Convert.ToString(dr[5]).Trim();
+                        excelResourcedata.resource_name = Convert.ToString(dr[6]).Trim();
                         lstExcelResourcedata.Add(excelResourcedata);
                     }
                 }
@@ -306,9 +166,9 @@ namespace GanttChart.Controllers
                             excelRoadMapdata.program_name = Convert.ToString(dr[0]).Trim();
                             excelRoadMapdata.region_name = Convert.ToString(dr[2]).Trim(); ;
                             excelRoadMapdata.country_name = Convert.ToString(dr[3]).Trim();
-                          //  excelRoadMapdata.start_date = (Convert.ToDateTime(Convert.ToString(dr[4]).Trim())).ToString("dd-MM-yyyy");
-                          //  excelRoadMapdata.end_date = (Convert.ToDateTime(Convert.ToString(dr[5]).Trim())).ToString("dd-MM-yyyy");
-                            excelRoadMapdata.start_date = Convert.ToString(dr[4]).Trim().Replace('/','-');
+                            //  excelRoadMapdata.start_date = (Convert.ToDateTime(Convert.ToString(dr[4]).Trim())).ToString("dd-MM-yyyy");
+                            //  excelRoadMapdata.end_date = (Convert.ToDateTime(Convert.ToString(dr[5]).Trim())).ToString("dd-MM-yyyy");
+                            excelRoadMapdata.start_date = Convert.ToString(dr[4]).Trim().Replace('/', '-');
                             excelRoadMapdata.end_date = Convert.ToString(dr[5]).Trim().Replace('/', '-');
                             excelRoadMapdata.resource_name = Convert.ToString(resourcelist[i].resource_name.Trim()); ;
                             lstExcelRoadMapdata.Add(excelRoadMapdata);
@@ -333,7 +193,7 @@ namespace GanttChart.Controllers
                 excelData.excelColordata = lstExcelColordata;
 
                 excelRoadMapdata = new ExcelRoadMapdata();
-                excelRoadMapdata.program_name = ex.ToString();            
+                excelRoadMapdata.program_name = ex.ToString();
                 lstExcelRoadMapdata.Add(excelRoadMapdata);
 
                 excelData.excelRoadMapdata = lstExcelRoadMapdata;
@@ -345,8 +205,138 @@ namespace GanttChart.Controllers
 
         }
 
+
+        [HttpPost]
+        [ActionName("uploadSharePointFile")]
+        public string uploadSharePointFile()
+        {
+            string result = "success";
+            try
+            {
+                string Username = Decryption.DecryptNew(System.Configuration.ConfigurationManager.AppSettings["UserName"].ToString());
+                string Password = Decryption.DecryptNew(System.Configuration.ConfigurationManager.AppSettings["Password"].ToString());
+
+                var destpath = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/CurrentFile"), "Global_IT_Roadmap.xlsx");
+    
+               // var networkPath = @"\\192.168.4.49\ShareFolder";
+               // var credentials = new NetworkCredential("admin", "123456");
+               // using (new NetworkConnection(networkPath, credentials))
+               // {
+               //     var fileList = Directory.GetFiles(networkPath);
+               // }
+               //// using (new NetworkConnection(networkPath, credentials))
+               // using (new NetworkConnection(networkPath, credentials))
+               // {
+               //     File.Copy(@"\\server\read\file", destpath);
+               // }
+               
+
+                //foreach (var file in fileList)
+                //{
+                //    Console.WriteLine("{0}", Path.GetFileName(file));
+                //}  
+              
+                WebClient webClient = new WebClient();
+             
+                webClient.Credentials = new NetworkCredential(Username,Password);
+                webClient.OpenRead(SharepointPath);
+                webClient.DownloadFile(SharepointPath, destpath);
+
+                var archivefileName = "Global_IT_Roadmap" + "_" + DateTime.Now.ToString("MMddyyhhmm");
+                var archivepath = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/Archive"), archivefileName + ".xlsx");
+
+                webClient.DownloadFile(SharepointPath, archivepath);
+                return result;
+            }
+            catch(Exception ex)
+            {              
+                writeLog(ex);             
+                return ex.ToString();
+            }
+
+        }
+        public void writeLog(Exception ex)
+        {
+            string filePath = Path.Combine(HttpContext.Current.Server.MapPath("~/Log"), "Error.txt");
+            using (StreamWriter writer = new StreamWriter(filePath, true))
+            {
+                writer.WriteLine("-----------------------------------------------------------------------------");
+                writer.WriteLine("Date : " + DateTime.Now.ToString());
+                writer.WriteLine();
+
+                while (ex != null)
+                {
+                    writer.WriteLine(ex.GetType().FullName);
+                    writer.WriteLine("Message : " + ex.Message);
+                    writer.WriteLine("StackTrace : " + ex.StackTrace);
+
+                    ex = ex.InnerException;
+                }
+            }
+        }
+
+        [HttpPost]
+        [ActionName("uploadHistoryFile")]
+        public string uploadHistoryFile(string filename)
+        {
+            string result = "success";
+            try
+            {
+
+                var archivepath = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/Archive"));
+                // string[] filePaths = Directory.GetFiles(path, filename);
+                DirectoryInfo d = new DirectoryInfo(archivepath);//Assuming Test is your Folder
+
+                FileInfo[] archiveFiles = d.GetFiles(filename); //Getting Text files
+
+                var destpath = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/CurrentFile"), "Global_IT_Roadmap.xlsx");
+                FileInfo[] deleteFiles = d.GetFiles("Global_IT_Roadmap.xlsx");
+                foreach (FileInfo file in archiveFiles)
+                {
+                    file.CreationTime = DateTime.Now;
+                    file.CopyTo(destpath, true);
+                }
+                return result;
+            }
+            catch(Exception ex)
+            {
+                return ex.ToString();
+            }
+        }
+
+        [HttpGet]
+        [ActionName("getArchive")]
+        public List<HistoryFiledata> GetAllHistory()
+        {
+            List<HistoryFiledata> lsthistoryFiledata = new List<HistoryFiledata>();
+            HistoryFiledata historyFiledata;
+            try
+            {
+                //  var fileName = Path.GetFileName(file.FileName);
+                var path = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/Archive"));
+                //string[] filePaths = Directory.GetFiles(path, "*.xlsx");
+                DirectoryInfo d = new DirectoryInfo(path);//Assuming Test is your Folder
+
+                FileInfo[] Files = d.GetFiles("*.xlsx").OrderByDescending(p => p.CreationTime).ToArray(); //Getting Text files
+
+                foreach (FileInfo file in Files)
+                {
+                    historyFiledata = new HistoryFiledata();
+                    historyFiledata.file_name = file.Name;
+                    lsthistoryFiledata.Add(historyFiledata);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                //OTIS_Subscription_API.App_Code.LoggerHelper.ExcpLogger("FormatController", "GetAllFormat", ex);
+                lsthistoryFiledata = null;
+            }
+            return lsthistoryFiledata;
+
+        }
+
         [NonAction]
-        // [ActionName("UploadFile")]
         public string PostUpload()
         {
             var file = HttpContext.Current.Request.Files.Count > 0 ?
@@ -359,9 +349,10 @@ namespace GanttChart.Controllers
             }
             return "~/CSV" + file.FileName;
         }
+
         [HttpPost]
-        [ActionName("UploadExcelFile")]
-        public string PostUploadExcel()
+        [ActionName("uploadExcelFile")]
+        public string uploadExcelFile()
         {
             var file = HttpContext.Current.Request.Files.Count > 0 ?
             HttpContext.Current.Request.Files[0] : null;
