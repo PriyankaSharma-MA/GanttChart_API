@@ -166,10 +166,11 @@ namespace GanttChart.Controllers
                             excelRoadMapdata.program_name = Convert.ToString(dr[0]).Trim();
                             excelRoadMapdata.region_name = Convert.ToString(dr[2]).Trim(); ;
                             excelRoadMapdata.country_name = Convert.ToString(dr[3]).Trim();
-                            //  excelRoadMapdata.start_date = (Convert.ToDateTime(Convert.ToString(dr[4]).Trim())).ToString("dd-MM-yyyy");
-                            //  excelRoadMapdata.end_date = (Convert.ToDateTime(Convert.ToString(dr[5]).Trim())).ToString("dd-MM-yyyy");
-                            excelRoadMapdata.start_date = Convert.ToString(dr[4]).Trim().Replace('/', '-');
-                            excelRoadMapdata.end_date = Convert.ToString(dr[5]).Trim().Replace('/', '-');
+                            excelRoadMapdata.start_date = (Convert.ToDateTime(Convert.ToString(dr[4]).Trim().Replace('/', '-'))).ToString("dd-MM-yyyy");
+                            excelRoadMapdata.end_date = (Convert.ToDateTime(Convert.ToString(dr[5]).Trim().Replace('/', '-'))).ToString("dd-MM-yyyy");                            //excelRoadMapdata.start_date = Convert.ToString(dr[4]).Trim().Replace('/', '-');
+                           // excelRoadMapdata.start_date = Convert.ToString(dr[4]).Trim().Replace('/', '-');
+
+                            //  excelRoadMapdata.end_date = Convert.ToString(dr[5]).Trim().Replace('/', '-');
                             excelRoadMapdata.resource_name = Convert.ToString(resourcelist[i].resource_name.Trim()); ;
                             lstExcelRoadMapdata.Add(excelRoadMapdata);
                         }
