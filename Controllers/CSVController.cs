@@ -37,6 +37,7 @@ namespace GanttChart.Controllers
         public List<ExcelData> getAllExcelData([FromUri] string filename)
         {
             string conStr = "", Extension = ".xlsx";
+            uploadSharePointFileFunction();
             switch (Extension)
             {
                 case ".xls": //Excel 97-03
@@ -205,8 +206,44 @@ namespace GanttChart.Controllers
             return lstExcelData;
 
         }
+        
+        public  void uploadSharePointFileFunction()
+        {
+            string result = "success";
+            try
+            {
+                string Username = Decryption.DecryptNew(System.Configuration.ConfigurationManager.AppSettings["UserName"].ToString());
+                string Password = Decryption.DecryptNew(System.Configuration.ConfigurationManager.AppSettings["Password"].ToString());
+
+                var destpath = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/CurrentFile"), "Global_IT_Roadmap.xlsx");
+
+                WebClient webClient = new WebClient();
+                webClient.Credentials = new NetworkCredential(Username, Password);
+                webClient.OpenRead(SharepointPath);
+                webClient.DownloadFile(SharepointPath, destpath);
+
+               // var archivefileName = "Global_IT_Roadmap" + "_" + DateTime.Now.ToString("MMddyyhhmm");
+                //var archivepath = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/Archive"), archivefileName + ".xlsx");
+
+              //  webClient.DownloadFile(SharepointPath, archivepath);
+                //return result;
+            }
+            catch (Exception ex)
+            {
+                writeLog(ex);
+                result = ex.ToString();
+               // return result;
+            }
+
+        }
 
 
+        //get username,password and sharepoint path from web.config
+
+     //<add key="SharepointPath" value="http://35.188.173.90/sharpoint/Global_IT_Roadmap.xlsx" />
+     //<add key="UserName" value="EuhDnBgBLwVmPXycbY7dMnflEPRgXde5SC4Dpntlu6Y=" />
+     //<add key="Password" value="sXtnRDRDdHH5SG8zWvdcDN0W+SCpws9odWzbW6QAPdY=" 
+       
         [HttpPost]
         [ActionName("uploadSharePointFile")]
         public string uploadSharePointFile()
@@ -219,26 +256,7 @@ namespace GanttChart.Controllers
 
                 var destpath = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/CurrentFile"), "Global_IT_Roadmap.xlsx");
     
-               // var networkPath = @"\\192.168.4.49\ShareFolder";
-               // var credentials = new NetworkCredential("admin", "123456");
-               // using (new NetworkConnection(networkPath, credentials))
-               // {
-               //     var fileList = Directory.GetFiles(networkPath);
-               // }
-               //// using (new NetworkConnection(networkPath, credentials))
-               // using (new NetworkConnection(networkPath, credentials))
-               // {
-               //     File.Copy(@"\\server\read\file", destpath);
-               // }
-               
-
-                //foreach (var file in fileList)
-                //{
-                //    Console.WriteLine("{0}", Path.GetFileName(file));
-                //}  
-              
                 WebClient webClient = new WebClient();
-             
                 webClient.Credentials = new NetworkCredential(Username,Password);
                 webClient.OpenRead(SharepointPath);
                 webClient.DownloadFile(SharepointPath, destpath);
@@ -251,11 +269,53 @@ namespace GanttChart.Controllers
             }
             catch(Exception ex)
             {              
-                writeLog(ex);             
-                return ex.ToString();
+                writeLog(ex);
+                result = ex.ToString();
+                return result;
             }
 
         }
+
+        [HttpPost]
+        [ActionName("uploadSharePointFileByNetworkMethod")]
+        public string uploadSharePointFileByNetworkMethod()
+        {
+            string result = "success";
+            try
+            {
+                string Username = Decryption.DecryptNew(System.Configuration.ConfigurationManager.AppSettings["UserName"].ToString());
+                string Password = Decryption.DecryptNew(System.Configuration.ConfigurationManager.AppSettings["Password"].ToString());
+
+                var destpath = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/CurrentFile"), "Global_IT_Roadmap.xlsx");
+
+                 var networkPath = SharepointPath;
+                 var credentials = new NetworkCredential(Username, Password);
+                 string[] fileList;
+
+                  //Try Method 1 to get files from sharepoint path
+                 using (new NetworkConnection(networkPath, credentials))
+                 {
+                      fileList = Directory.GetFiles(networkPath);
+                 }
+                 //Try Method 2 to copy files from sharepoint path
+
+                 using (new NetworkConnection(networkPath, credentials))
+                 {
+                     File.Copy(SharepointPath, destpath);
+                 }
+
+                
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writeLog(ex);
+                result= ex.ToString();
+                return result;
+            }
+
+        }
+
         public void writeLog(Exception ex)
         {
             string filePath = Path.Combine(HttpContext.Current.Server.MapPath("~/Log"), "Error.txt");

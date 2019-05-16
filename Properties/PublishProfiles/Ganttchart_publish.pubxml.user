@@ -61,10 +61,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/30/2011 15:40:26</publishTime>
     </File>
     <File Include="bin/GanttChart.dll">
-      <publishTime>03/24/2019 12:47:22</publishTime>
+      <publishTime>05/16/2019 22:37:31</publishTime>
     </File>
     <File Include="bin/GanttChart.dll.config">
-      <publishTime>03/21/2019 19:40:21</publishTime>
+      <publishTime>05/03/2019 21:44:19</publishTime>
     </File>
     <File Include="bin/Microsoft.Web.Infrastructure.dll">
       <publishTime>01/09/2019 15:04:51</publishTime>
@@ -132,6 +132,9 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Global.asax">
       <publishTime>11/20/2018 21:37:33</publishTime>
     </File>
+    <File Include="Log/Error.txt">
+      <publishTime>05/16/2019 22:37:07</publishTime>
+    </File>
     <File Include="packages.config">
       <publishTime>03/21/2019 19:40:21</publishTime>
     </File>
@@ -178,7 +181,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>11/20/2018 21:37:33</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>03/24/2019 12:47:27</publishTime>
+      <publishTime>05/16/2019 22:37:33</publishTime>
     </File>
   </ItemGroup>
 </Project>
