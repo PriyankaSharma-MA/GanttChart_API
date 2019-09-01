@@ -37,7 +37,7 @@ namespace GanttChart.Controllers
         public List<ExcelData> getAllExcelData([FromUri] string filename)
         {
             string conStr = "", Extension = ".xlsx";
-            uploadSharePointFileFunction();
+          //  uploadSharePointFileFunction();
             switch (Extension)
             {
                 case ".xls": //Excel 97-03
@@ -261,10 +261,10 @@ namespace GanttChart.Controllers
                 webClient.OpenRead(SharepointPath);
                 webClient.DownloadFile(SharepointPath, destpath);
 
-                var archivefileName = "Global_IT_Roadmap" + "_" + DateTime.Now.ToString("MMddyyhhmm");
-                var archivepath = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/Archive"), archivefileName + ".xlsx");
+                //var archivefileName = "Global_IT_Roadmap" + "_" + DateTime.Now.ToString("MMddyyhhmm");
+                //var archivepath = Path.Combine(HttpContext.Current.Server.MapPath("~/CSV/Archive"), archivefileName + ".xlsx");
 
-                webClient.DownloadFile(SharepointPath, archivepath);
+                //webClient.DownloadFile(SharepointPath, archivepath);
                 return result;
             }
             catch(Exception ex)
